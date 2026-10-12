@@ -1,0 +1,6 @@
+{
+  "name": "F1-IndoMetrics: Indian Grand Prix Financial Feasibility Model",
+  "description": "An academic financial feasibility and scenario analysis model for hosting an Indian Grand Prix, featuring interactive sensitivity testing, break-even simulation, and comprehensive methodology documentation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

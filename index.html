@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>F1 Indometrics: Mobile Financial Feasibility Model</title>
+  <meta name="description" content="A mobile-first financial feasibility and Monte Carlo risk analysis model for hosting an Indian Grand Prix, featuring break-even simulation, sensitivity testing, and scenario analysis." />
+  <meta property="og:title" content="F1 Indometrics: Mobile Financial Feasibility Model" />
+  <meta property="og:description" content="A mobile-first financial feasibility and Monte Carlo risk analysis model for hosting an Indian Grand Prix, featuring break-even simulation, sensitivity testing, and scenario analysis." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- External Stylesheet -->
+  <link rel="stylesheet" href="/style.css" />
+
+  <!-- Chart.js via CDN with graceful script fallback -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- =========================================================================
+       1. COMPACT STICKY TOP HEADER
+       ========================================================================= -->
+  <header class="app-header" id="top-header">
+    <div class="container header-inner">
+      <a href="#view-home" class="brand-block header-nav-link" aria-label="F1 Indometrics Home">
+        <div class="brand-icon" aria-hidden="true">F1</div>
+        <div class="brand-titles">
+          <h1>F1 Indometrics</h1>
+          <p>Indian GP Financial Feasibility Prototype</p>
+        </div>
+      </a>
+
+      <!-- Desktop header navigation pills (hidden on small mobile in favor of bottom nav) -->
+      <nav class="desktop-nav-links" aria-label="Desktop Navigation">
+        <a href="#view-home" class="header-nav-link active">Home</a>
+        <a href="#view-simulator" class="header-nav-link">Simulator</a>
+        <a href="#view-results" class="header-nav-link">Results</a>
+        <a href="#view-risk" class="header-nav-link">Risk & Scenarios</a>
+      </nav>
+
+      <span class="academic-badge">Academic Model</span>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN CONTENT CONTAINER (PADDED BOTTOM FOR MOBILE NAV)
+       ========================================================================= -->
+  <main class="container main-content" id="main-app">
+
+    <!-- =======================================================================
+         VIEW 1: MOBILE HOME SCREEN
+         ======================================================================= -->
+    <section class="mobile-view-section" id="view-home" aria-labelledby="home-title">
+      
+      <!-- Hero Card -->
+      <div class="hero-mobile-card">
+        <div class="hero-tag-row">
+          <span class="circuit-pill">Buddh International Circuit (BIC)</span>
+          <span class="tag-academic">Decision Support v1.0</span>
+        </div>
+
+        <h2 class="hero-mobile-title" id="home-title">Promoter Financial Feasibility & Risk Simulation</h2>
+        
+        <p class="hero-mobile-desc">
+          An educational decision-support model evaluating promoter unit economics, break-even attendance thresholds, and stochastic Monte Carlo profit probabilities for an Indian Grand Prix.
+        </p>
+
+        <!-- Primary Call to Action -->
+        <div class="hero-actions">
+          <button type="button" id="btn-hero-run" class="btn-primary btn-large">
+            <span class="btn-icon" aria-hidden="true">⚡</span> Run Full Simulation
+          </button>
+          
+          <div class="hero-sub-actions">
+            <button type="button" id="btn-hero-simulator" class="btn-secondary">
+              Open Simulator
+            </button>
+            <button type="button" id="btn-hero-risk" class="btn-secondary">
+              Risk & Scenarios
+            </button>
+            <button type="button" id="btn-hero-example" class="btn-secondary">
+              Load Example
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Metrics Snapshot Cards (Home View) -->
+      <div class="home-snapshot-container">
+        <div class="section-label-row">
+          <span class="section-badge-label">Executive Metrics Snapshot</span>
+          <span class="section-hint-label">Live Baseline Output</span>
+        </div>
+
+        <div class="home-kpi-grid">
+          <!-- Card 1: Estimated Net Result -->
+          <div class="home-kpi-card">
+            <div class="home-kpi-header">
+              <span class="home-kpi-title">Net Promoter Result</span>
+              <span class="home-kpi-badge">Bottom Line</span>
+            </div>
+            <div class="home-kpi-val tabular-nums text-surplus" id="home-kpi-net-val">₹0</div>
+            <div class="home-kpi-sub" id="home-kpi-net-sub">Operating Surplus</div>
+          </div>
+
+          <!-- Card 2: Break-Even Attendance -->
+          <div class="home-kpi-card">
+            <div class="home-kpi-header">
+              <span class="home-kpi-title">Break-Even Gate</span>
+              <span class="home-kpi-badge">Threshold</span>
+            </div>
+            <div class="home-kpi-val tabular-nums" id="home-kpi-breakeven-val">0</div>
+            <div class="home-kpi-sub" id="home-kpi-breakeven-sub">Current: 50,000 attendees</div>
+          </div>
+
+          <!-- Card 3: Monte Carlo Profit Probability -->
+          <div class="home-kpi-card">
+            <div class="home-kpi-header">
+              <span class="home-kpi-title">Probability of Profit</span>
+              <span class="home-kpi-badge">Monte Carlo</span>
+            </div>
+            <div class="home-kpi-val tabular-nums text-surplus" id="home-kpi-prob-val">0.0%</div>
+            <div class="home-kpi-sub" id="home-kpi-prob-sub">Across 500 Stochastic Trials</div>
+          </div>
+        </div>
+
+        <div class="academic-disclaimer-card">
+          <strong>Academic Note:</strong> Default baseline inputs are illustrative working hypotheses for testing promoter feasibility, not verified corporate accounts or government forecasts.
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =======================================================================
+         VIEW 2: MOBILE FINANCIAL SIMULATOR
+         ======================================================================= -->
+    <section class="mobile-view-section" id="view-simulator" aria-labelledby="simulator-title">
+      
+      <div class="section-header-compact">
+        <div>
+          <h2 class="view-title" id="simulator-title">
+            <span class="title-step-tag">[01]</span> Financial Simulator
+          </h2>
+          <p class="view-subtitle">Adjust promoter gate yield, commercial revenues, and operational outflows</p>
+        </div>
+        <button type="button" id="btn-toggle-all-accordions" class="btn-ghost-sm" aria-label="Toggle all accordion sections">
+          Collapse All
+        </button>
+      </div>
+
+      <form id="feasibility-form" class="simulator-form" onsubmit="event.preventDefault();">
+        
+        <!-- Accordion 1: Ticketing & Attendance -->
+        <div class="accordion-card">
+          <button type="button" class="accordion-toggle-btn active" aria-expanded="true" aria-controls="accordion-panel-1">
+            <div class="accordion-btn-left">
+              <span class="accordion-icon">🎟️</span>
+              <div>
+                <div class="accordion-btn-title">Ticket Pricing & Attendance Yield</div>
+                <div class="accordion-btn-sub" id="accordion-tag-ticketing">₹8,000 · 50,000 Attendees</div>
+              </div>
+            </div>
+            <span class="accordion-chevron" aria-hidden="true">▼</span>
+          </button>
+          
+          <div class="accordion-panel" id="accordion-panel-1">
+            <!-- Input 1: Ticket Price -->
+            <div class="mobile-input-group">
+              <div class="input-header-row">
+                <label for="input-ticket-price" class="mobile-label">Average Ticket Price</label>
+                <span class="label-info">Default: ₹8,000</span>
+              </div>
+              <div class="input-field-wrap">
+                <span class="input-currency-prefix">₹</span>
+                <input type="number" id="input-ticket-price" class="mobile-input has-prefix" value="8000" min="1" step="100" required inputmode="numeric" />
+              </div>
+              <div id="error-ticket-price" class="input-error-msg"></div>
+              <div class="input-help-text">Blended net yield across grandstand and general admission tiers.</div>
+            </div>
+
+            <!-- Input 2: Attendance with Touch Slider -->
+            <div class="mobile-input-group">
+              <div class="input-header-row">
+                <label for="input-attendance" class="mobile-label">Expected Paying Attendance</label>
+                <span class="label-info">Default: 50,000</span>
+              </div>
+              <div class="input-field-wrap">
+                <input type="number" id="input-attendance" class="mobile-input" value="50000" min="0" max="150000" step="500" required inputmode="numeric" />
+                <span class="input-unit-suffix">Attendees</span>
+              </div>
+              <input type="range" id="slider-attendance" class="touch-slider" min="10000" max="120000" step="1000" value="50000" aria-label="Attendance slider" />
+              <div class="slider-endpoints">
+                <span>10k</span>
+                <span>Buddh Circuit Capacity ~100k</span>
+                <span>120k</span>
+              </div>
+              <div id="error-attendance" class="input-error-msg"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accordion 2: Commercial Revenues & Operating Costs -->
+        <div class="accordion-card">
+          <button type="button" class="accordion-toggle-btn active" aria-expanded="true" aria-controls="accordion-panel-2">
+            <div class="accordion-btn-left">
+              <span class="accordion-icon">💼</span>
+              <div>
+                <div class="accordion-btn-title">Commercial Revenue & Operating Costs</div>
+                <div class="accordion-btn-sub" id="accordion-tag-promoter">Rev: ₹25.00 Cr · Cost: ₹60.00 Cr</div>
+              </div>
+            </div>
+            <span class="accordion-chevron" aria-hidden="true">▼</span>
+          </button>
+          
+          <div class="accordion-panel" id="accordion-panel-2">
+            <!-- Input 3: Sponsorship & Other Revenue -->
+            <div class="mobile-input-group">
+              <div class="input-header-row">
+                <label for="input-other-revenue" class="mobile-label">Sponsorship & Other Event Revenue</label>
+                <span class="label-info">Default: ₹25 Cr</span>
+              </div>
+              <div class="input-field-wrap">
+                <span class="input-currency-prefix">₹</span>
+                <input type="number" id="input-other-revenue" class="mobile-input has-prefix" value="250000000" min="0" step="5000000" required inputmode="numeric" />
+              </div>
+              <div id="error-other-revenue" class="input-error-msg"></div>
+              <div class="scale-converter-row">
+                <span>Indian Rupee Scale:</span>
+                <strong id="preview-other-revenue" class="tabular-nums">₹25.00 Cr</strong>
+              </div>
+              <div class="input-help-text">Promoter-retained domestic sponsors, hospitality packages, concessions, and vendor merchandise.</div>
+            </div>
+
+            <!-- Input 4: Event Operating Cost -->
+            <div class="mobile-input-group">
+              <div class="input-header-row">
+                <label for="input-operating-cost" class="mobile-label">Event Operating Cost</label>
+                <span class="label-info">Default: ₹60 Cr</span>
+              </div>
+              <div class="input-field-wrap">
+                <span class="input-currency-prefix">₹</span>
+                <input type="number" id="input-operating-cost" class="mobile-input has-prefix" value="600000000" min="0" step="10000000" required inputmode="numeric" />
+              </div>
+              <div id="error-operating-cost" class="input-error-msg"></div>
+              <div class="scale-converter-row">
+                <span>Indian Rupee Scale:</span>
+                <strong id="preview-operating-cost" class="tabular-nums">₹60.00 Cr</strong>
+              </div>
+              <div class="input-help-text">Direct staging, circuit operations, track marshals, medical helicopters, security, and staffing.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accordion 3: Fiscal Assumption & Local Spending -->
+        <div class="accordion-card">
+          <button type="button" class="accordion-toggle-btn" aria-expanded="false" aria-controls="accordion-panel-3">
+            <div class="accordion-btn-left">
+              <span class="accordion-icon">⚖️</span>
+              <div>
+                <div class="accordion-btn-title">Tax Sensitivity & Regional Spending</div>
+                <div class="accordion-btn-sub" id="accordion-tag-fiscal">Tax: 18% · Spend: ₹15,000</div>
+              </div>
+            </div>
+            <span class="accordion-chevron" aria-hidden="true">▼</span>
+          </button>
+          
+          <div class="accordion-panel collapsed" id="accordion-panel-3">
+            <!-- Input 5: Illustrative Tax Rate -->
+            <div class="mobile-input-group">
+              <div class="input-header-row">
+                <label for="input-tax-rate" class="mobile-label">Illustrative Effective Tax Rate</label>
+                <span class="label-info">Default: 18%</span>
+              </div>
+              <div class="input-field-wrap">
+                <input type="number" id="input-tax-rate" class="mobile-input" value="18" min="0" max="100" step="0.5" required inputmode="decimal" />
+                <span class="input-unit-suffix">%</span>
+              </div>
+              <div id="error-tax-rate" class="input-error-msg"></div>
+              <div class="input-help-text">Sensitivity baseline applied directly to ticket receipts. Not legal tax counsel. Actual rate requires verification.</div>
+            </div>
+
+            <!-- Input 6: Attendee Local Spending -->
+            <div class="mobile-input-group">
+              <div class="input-header-row">
+                <label for="input-local-spending" class="mobile-label">Estimated Local Spending / Attendee</label>
+                <span class="label-info">Default: ₹15,000</span>
+              </div>
+              <div class="input-field-wrap">
+                <span class="input-currency-prefix">₹</span>
+                <input type="number" id="input-local-spending" class="mobile-input has-prefix" value="15000" min="0" step="500" required inputmode="numeric" />
+              </div>
+              <div id="error-local-spending" class="input-error-msg"></div>
+              <div class="input-help-text">Regional tourism indicator (hotel, food, transit). Strictly segregated from promoter profits.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prominent Simulation Buttons -->
+        <div class="simulator-actions-stack">
+          <button type="button" id="btn-calculate" class="btn-primary btn-large">
+            <span class="btn-icon" aria-hidden="true">⚡</span> Calculate Feasibility & Run Risk
+          </button>
+
+          <div class="actions-grid-2x2">
+            <button type="button" id="btn-load-example" class="btn-secondary">
+              Load Example
+            </button>
+            <button type="button" id="btn-reset" class="btn-secondary">
+              Reset Inputs
+            </button>
+            <button type="button" id="btn-compare-scenarios" class="btn-secondary">
+              Compare Scenarios
+            </button>
+            <button type="button" id="btn-export-csv" class="btn-secondary">
+              Export CSV
+            </button>
+          </div>
+
+          <button type="button" id="btn-print-report" class="btn-secondary btn-full">
+            Print / Save Report (PDF)
+          </button>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- =======================================================================
+         VIEW 3: RESULTS DASHBOARD
+         ======================================================================= -->
+    <section class="mobile-view-section" id="view-results" aria-labelledby="results-title">
+      
+      <div class="section-header-compact">
+        <div>
+          <h2 class="view-title" id="results-title">
+            <span class="title-step-tag">[02]</span> Feasibility Results
+          </h2>
+          <p class="view-subtitle">Live model indicators, margins, break-even gate, and dynamic synthesis</p>
+        </div>
+      </div>
+
+      <!-- Surplus / Shortfall Status Banner -->
+      <div id="status-banner" class="status-banner surplus" role="region" aria-live="polite">
+        <div class="status-banner-left">
+          <div id="status-indicator-badge" class="status-indicator-badge">+</div>
+          <div>
+            <div id="status-text-headline" class="status-text-headline">Estimated Modeled Surplus</div>
+            <div id="status-text-subline" class="status-text-subline">Revenues exceed modeled outflows under current assumptions</div>
+          </div>
+        </div>
+        <div class="status-banner-amount">
+          <div class="status-amount-label">Net Result</div>
+          <div id="status-amount-val" class="status-amount-val tabular-nums">₹0</div>
+        </div>
+      </div>
+
+      <!-- 6 Compact KPI Cards Grid -->
+      <div class="kpi-grid">
+        <!-- KPI 1: Total Revenue -->
+        <div class="kpi-card kpi-revenue">
+          <div class="kpi-header">
+            <span class="kpi-label">Total Event Revenue</span>
+            <span class="kpi-tag">Gross</span>
+          </div>
+          <div class="kpi-value-block">
+            <div id="kpi-total-revenue" class="kpi-primary-val tabular-nums">₹0</div>
+            <div id="kpi-total-revenue-sub" class="kpi-sub-val tabular-nums">₹0</div>
+          </div>
+          <div class="kpi-footer-note">Gate receipts + sponsorships</div>
+        </div>
+
+        <!-- KPI 2: Total Outflow -->
+        <div class="kpi-card kpi-outflow">
+          <div class="kpi-header">
+            <span class="kpi-label">Modeled Total Outflow</span>
+            <span class="kpi-tag">Costs + Tax</span>
+          </div>
+          <div class="kpi-value-block">
+            <div id="kpi-total-outflow" class="kpi-primary-val tabular-nums">₹0</div>
+            <div id="kpi-total-outflow-sub" class="kpi-sub-val tabular-nums">₹0</div>
+          </div>
+          <div class="kpi-footer-note">Operating cost + illustrative tax</div>
+        </div>
+
+        <!-- KPI 3: Net Result -->
+        <div class="kpi-card kpi-net">
+          <div class="kpi-header">
+            <span class="kpi-label">Estimated Net Result</span>
+            <span class="kpi-tag">Bottom Line</span>
+          </div>
+          <div class="kpi-value-block">
+            <div id="kpi-net-result" class="kpi-primary-val tabular-nums">₹0</div>
+            <div id="kpi-net-result-sub" class="kpi-sub-val tabular-nums">₹0</div>
+          </div>
+          <div class="kpi-footer-note">Promoter surplus or deficit</div>
+        </div>
+
+        <!-- KPI 4: Break-Even Attendance -->
+        <div class="kpi-card kpi-breakeven">
+          <div class="kpi-header">
+            <span class="kpi-label">Break-Even Gate</span>
+            <span class="kpi-tag">Threshold</span>
+          </div>
+          <div class="kpi-value-block">
+            <div id="kpi-breakeven" class="kpi-primary-val tabular-nums">0</div>
+            <div id="kpi-breakeven-sub" class="kpi-sub-val tabular-nums">Gap: 0 attendees</div>
+          </div>
+          <div class="kpi-footer-note">Tickets required to cover costs</div>
+        </div>
+
+        <!-- KPI 5: Attendee Local Spending (Segregated) -->
+        <div class="kpi-card kpi-local">
+          <div class="kpi-header">
+            <span class="kpi-label">Attendee Local Spend</span>
+            <span class="kpi-tag">Regional</span>
+          </div>
+          <div class="kpi-value-block">
+            <div id="kpi-local-spending" class="kpi-primary-val tabular-nums">₹0</div>
+            <div id="kpi-local-spending-sub" class="kpi-sub-val tabular-nums">External Metric</div>
+          </div>
+          <div class="kpi-footer-note">Segregated from promoter profit</div>
+        </div>
+
+        <!-- KPI 6: Margin % -->
+        <div class="kpi-card kpi-margin">
+          <div class="kpi-header">
+            <span class="kpi-label">Operating Margin</span>
+            <span class="kpi-tag">Yield</span>
+          </div>
+          <div class="kpi-value-block">
+            <div id="kpi-margin" class="kpi-primary-val tabular-nums">0.0%</div>
+            <div id="kpi-margin-sub" class="kpi-sub-val tabular-nums">Margin %</div>
+          </div>
+          <div class="kpi-footer-note">Net result / total event revenue</div>
+        </div>
+      </div>
+
+      <!-- Dynamic Automated Financial Synthesis Narrative -->
+      <div class="card narrative-card">
+        <div class="narrative-title">
+          <span>Automated Financial Interpretation</span>
+        </div>
+        <div id="dynamic-analysis-narrative" class="narrative-text">
+          <!-- Dynamically populated in script.js -->
+        </div>
+      </div>
+
+      <!-- Line-Item Financial Statement -->
+      <div class="card details-breakdown-card">
+        <div class="section-header" style="margin-bottom: 10px;">
+          <div class="chart-title">Line-Item Financial Statement</div>
+          <span class="section-subtitle">Precise INR & Scale</span>
+        </div>
+        <div class="table-responsive">
+          <table class="breakdown-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Classification</th>
+                <th class="text-right">Amount (INR)</th>
+                <th class="text-right">Scale</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ticket Revenue</td>
+                <td><small>Price × Attendance</small></td>
+                <td class="text-right tabular-nums" id="table-ticket-rev">₹0</td>
+                <td class="text-right tabular-nums" id="table-ticket-rev-scale">₹0</td>
+              </tr>
+              <tr>
+                <td>Sponsorship Revenue</td>
+                <td><small>Commercial Inflow</small></td>
+                <td class="text-right tabular-nums" id="table-other-rev">₹0</td>
+                <td class="text-right tabular-nums" id="table-other-rev-scale">₹0</td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>Total Modeled Revenue</strong></td>
+                <td><strong>Gross Inflow</strong></td>
+                <td class="text-right tabular-nums" id="table-total-rev"><strong>₹0</strong></td>
+                <td class="text-right tabular-nums" id="table-total-rev-scale"><strong>₹0</strong></td>
+              </tr>
+              <tr>
+                <td>Event Operating Cost</td>
+                <td><small>Direct Staging</small></td>
+                <td class="text-right tabular-nums" id="table-operating-cost">₹0</td>
+                <td class="text-right tabular-nums" id="table-operating-cost-scale">₹0</td>
+              </tr>
+              <tr>
+                <td>Illustrative Tax Outflow</td>
+                <td><small>Modeled Sensitivity</small></td>
+                <td class="text-right tabular-nums" id="table-tax-outflow">₹0</td>
+                <td class="text-right tabular-nums" id="table-tax-outflow-scale">₹0</td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>Total Outflows</strong></td>
+                <td><strong>Cash Outflow</strong></td>
+                <td class="text-right tabular-nums" id="table-total-outflow"><strong>₹0</strong></td>
+                <td class="text-right tabular-nums" id="table-total-outflow-scale"><strong>₹0</strong></td>
+              </tr>
+              <tr class="highlight-row" style="background-color: rgba(225, 6, 0, 0.06);">
+                <td><strong>Estimated Net Result</strong></td>
+                <td><strong>Bottom Line</strong></td>
+                <td class="text-right tabular-nums" id="table-net-result"><strong>₹0</strong></td>
+                <td class="text-right tabular-nums" id="table-net-result-scale"><strong>₹0</strong></td>
+              </tr>
+              <tr>
+                <td>Attendee Local Spending</td>
+                <td><small>External Tourism</small></td>
+                <td class="text-right tabular-nums" id="table-local-spend">₹0</td>
+                <td class="text-right tabular-nums" id="table-local-spend-scale">₹0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Visual Breakdown Chart -->
+      <div class="chart-container-box">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Revenue vs. Outflow Breakdown</div>
+            <div class="chart-subtitle">Component composition in ₹ Crore</div>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="chart-revenue-outflow" class="chart-canvas"></canvas>
+          <div id="fallback-revenue-outflow" class="chart-fallback-box" style="display: none;"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =======================================================================
+         VIEW 4: RISK, SCENARIOS & METHODOLOGY
+         ======================================================================= -->
+    <section class="mobile-view-section" id="view-risk" aria-labelledby="risk-title">
+      
+      <div class="section-header-compact">
+        <div>
+          <h2 class="view-title" id="risk-title">
+            <span class="title-step-tag">[03]</span> Risk, Probability & Scenarios
+          </h2>
+          <p class="view-subtitle">Monte Carlo stochastic trials, multi-case scenarios, and risk factors</p>
+        </div>
+      </div>
+
+      <!-- MONTE CARLO STOCHASTIC PROBABILITY CARD -->
+      <div class="card monte-carlo-card">
+        <div class="mc-card-header">
+          <div>
+            <div class="mc-badge">Stochastic Simulation</div>
+            <h3 class="mc-card-title">Monte Carlo Profit / Loss Probability</h3>
+          </div>
+          <span class="mc-trials-pill">500 Trials</span>
+        </div>
+
+        <p class="mc-explanation-text">
+          Simulates 500 randomized race outcomes incorporating historical motorsport attendance variance (±15%), pricing elasticity (±10%), and staging cost overruns (-10% to +25%).
+        </p>
+
+        <!-- Big Dual Probability Meter -->
+        <div class="mc-probability-meter-box">
+          <div class="mc-meter-labels">
+            <div>
+              <span class="meter-legend-dot dot-profit"></span>
+              <span>Profit Odds:</span>
+              <strong id="mc-profit-prob" class="tabular-nums text-surplus">0.0%</strong>
+            </div>
+            <div>
+              <span class="meter-legend-dot dot-loss"></span>
+              <span>Loss Risk:</span>
+              <strong id="mc-loss-prob" class="tabular-nums">0.0%</strong>
+            </div>
+          </div>
+
+          <div class="mc-meter-track" role="progressbar" aria-label="Profit and Loss probability meter">
+            <div id="mc-meter-profit" class="mc-meter-segment seg-profit" style="width: 50%;"></div>
+            <div id="mc-meter-loss" class="mc-meter-segment seg-loss" style="width: 50%;"></div>
+          </div>
+        </div>
+
+        <!-- Key Percentiles Grid -->
+        <div class="mc-percentiles-grid">
+          <div class="mc-percentile-box">
+            <span class="mc-p-label">Median Result (P50)</span>
+            <div id="mc-median-result" class="mc-p-val tabular-nums">₹0</div>
+            <span class="mc-p-sub">50% chance of exceeding</span>
+          </div>
+
+          <div class="mc-percentile-box">
+            <span class="mc-p-label">Downside VaR (P10)</span>
+            <div id="mc-var-p10" class="mc-p-val tabular-nums text-shortfall">₹0</div>
+            <span class="mc-p-sub">10th percentile downside</span>
+          </div>
+
+          <div class="mc-percentile-box">
+            <span class="mc-p-label">Upside Peak (P90)</span>
+            <div id="mc-upside-p90" class="mc-p-val tabular-nums">₹0</div>
+            <span class="mc-p-sub">90th percentile upside</span>
+          </div>
+        </div>
+
+        <!-- Monte Carlo Distribution Histogram Chart -->
+        <div class="mc-chart-box">
+          <div class="mc-chart-title">Trial Outcome Distribution (₹ Crore)</div>
+          <div class="chart-wrapper" style="height: 220px;">
+            <canvas id="chart-monte-carlo" class="chart-canvas"></canvas>
+            <div id="fallback-monte-carlo" class="chart-fallback-box" style="display: none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MULTI-CASE SCENARIO COMPARISON -->
+      <div class="scenario-section-wrap" id="scenarios-section">
+        <div class="section-header-compact">
+          <h3 class="subsection-title">Multi-Scenario Evaluation</h3>
+          <span class="section-subtitle">Low, Base, and High Cases</span>
+        </div>
+
+        <!-- Stacked Scenario Cards -->
+        <div class="scenario-cards-grid">
+          <!-- Low Case Card -->
+          <div class="scenario-editor-card">
+            <div class="scenario-header">
+              <div class="scenario-name">Low Case (Cautious)</div>
+              <span class="scenario-badge">Stress Test</span>
+            </div>
+            <div class="scenario-fields">
+              <div class="scenario-field-row">
+                <label>Attendance:</label>
+                <input type="number" class="scenario-input" data-scenario="low" data-field="attendance" value="38000" step="1000" />
+              </div>
+              <div class="scenario-field-row">
+                <label>Ticket Price (₹):</label>
+                <input type="number" class="scenario-input" data-scenario="low" data-field="ticketPrice" value="6500" step="500" />
+              </div>
+              <div class="scenario-field-row">
+                <label>Other Rev (₹):</label>
+                <input type="number" class="scenario-input" data-scenario="low" data-field="otherRevenue" value="180000000" step="10000000" />
+              </div>
+              <div class="scenario-field-row">
+                <label>Cost (₹):</label>
+                <input type="number" class="scenario-input" data-scenario="low" data-field="operatingCost" value="650000000" step="10000000" />
+              </div>
+            </div>
+            <div id="scenario-low-summary" class="scenario-calc-summary"></div>
+          </div>
+
+          <!-- Base Case Card -->
+          <div class="scenario-editor-card" style="border-color: rgba(225, 6, 0, 0.4);">
+            <div class="scenario-header">
+              <div class="scenario-name">Base Case (Reference)</div>
+              <span class="scenario-badge" style="color: var(--accent-red);">Baseline</span>
+            </div>
+            <div class="scenario-fields">
+              <div class="scenario-field-row">
+                <label>Attendance:</label>
+                <input type="number" class="scenario-input" data-scenario="base" data-field="attendance" value="50000" step="1000" />
+              </div>
+              <div class="scenario-field-row">
+                <label>Ticket Price (₹):</label>
+                <input type="number" class="scenario-input" data-scenario="base" data-field="ticketPrice" value="8000" step="500" />
+              </div>
+              <div class="scenario-field-row">
+                <label>Other Rev (₹):</label>
+                <input type="number" class="scenario-input" data-scenario="base" data-field="otherRevenue" value="250000000" step="10000000" />
+              </div>
+              <div class="scenario-field-row">
+                <label>Cost (₹):</label>
+                <input type="number" class="scenario-input" data-scenario="base" data-field="operatingCost" value="600000000" step="10000000" />
+              </div>
+            </div>
+            <div id="scenario-base-summary" class="scenario-calc-summary"></div>
+          </div>
+
+          <!-- High Case Card -->
+          <div class="scenario-editor-card">
+            <div class="scenario-header">
+              <div class="scenario-name">High Case (Optimistic)</div>
+              <span class="scenario-badge">Expansion</span>
+            </div>
+            <div class="scenario-fields">
+              <div class="scenario-field-row">
+                <label>Attendance:</label>
+                <input type="number" class="scenario-input" data-scenario="high" data-field="attendance" value="68000" step="1000" />
+              </div>
+              <div class="scenario-field-row">
+                <label>Ticket Price (₹):</label>
+                <input type="number" class="scenario-input" data-scenario="high" data-field="ticketPrice" value="9500" step="500" />
+              </div>
+              <div class="scenario-field-row">
+                <label>Other Rev (₹):</label>
+                <input type="number" class="scenario-input" data-scenario="high" data-field="otherRevenue" value="350000000" step="10000000" />
+              </div>
+              <div class="scenario-field-row">
+                <label>Cost (₹):</label>
+                <input type="number" class="scenario-input" data-scenario="high" data-field="operatingCost" value="620000000" step="10000000" />
+              </div>
+            </div>
+            <div id="scenario-high-summary" class="scenario-calc-summary"></div>
+          </div>
+        </div>
+
+        <!-- Scenario Table & Chart -->
+        <div class="sensitivity-grid" style="margin-top: 14px;">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Scenario Case</th>
+                  <th class="col-right">Attendance</th>
+                  <th class="col-right">Ticket Price</th>
+                  <th class="col-right">Total Revenue</th>
+                  <th class="col-right">Total Outflow</th>
+                  <th class="col-right">Net Result</th>
+                  <th class="col-right">Break-Even</th>
+                </tr>
+              </thead>
+              <tbody id="scenario-table-body"></tbody>
+            </table>
+          </div>
+
+          <div class="chart-container-box">
+            <div class="chart-header">
+              <div>
+                <div class="chart-title">Scenario Comparison</div>
+                <div class="chart-subtitle">Net Result across Low, Base & High (₹ Cr)</div>
+              </div>
+            </div>
+            <div class="chart-wrapper" style="height: 220px;">
+              <canvas id="chart-scenarios" class="chart-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DETERMINISTIC SENSITIVITY ANALYSIS -->
+      <div class="sensitivity-section-wrap" id="sensitivity-section">
+        <div class="section-header-compact">
+          <h3 class="subsection-title">Single-Variable Sensitivity Analysis</h3>
+          <span class="section-subtitle">Hold other inputs fixed (Ceteris Paribus)</span>
+        </div>
+
+        <div class="sensitivity-controls" role="tablist">
+          <button type="button" class="sensitivity-tab-btn active" data-var="attendance" role="tab">Attendance (±40%)</button>
+          <button type="button" class="sensitivity-tab-btn" data-var="ticketPrice" role="tab">Ticket Price (±40%)</button>
+          <button type="button" class="sensitivity-tab-btn" data-var="operatingCost" role="tab">Operating Cost (±50%)</button>
+          <button type="button" class="sensitivity-tab-btn" data-var="taxRate" role="tab">Tax Rate (0%–28%)</button>
+        </div>
+
+        <div class="sensitivity-grid">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Variation</th>
+                  <th class="col-right">Total Revenue</th>
+                  <th class="col-right">Total Outflow</th>
+                  <th class="col-right">Net Result</th>
+                  <th class="col-right">Break-Even</th>
+                </tr>
+              </thead>
+              <tbody id="sensitivity-table-body"></tbody>
+            </table>
+          </div>
+
+          <div class="chart-container-box">
+            <div class="chart-header">
+              <div>
+                <div class="chart-title">Sensitivity Curve</div>
+                <div class="chart-subtitle">Net Result response to tested parameter</div>
+              </div>
+            </div>
+            <div class="chart-wrapper" style="height: 220px;">
+              <canvas id="chart-sensitivity" class="chart-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STACKED RISK REGISTER CARDS (MOBILE-FRIENDLY) -->
+      <div class="risk-register-wrap" id="risk-register-section">
+        <div class="section-header-compact">
+          <h3 class="subsection-title">Omitted Promoter Variables & Risk Register</h3>
+          <span class="section-subtitle">Key factors omitted from simplified baseline</span>
+        </div>
+
+        <div class="risk-cards-stack">
+          <div class="risk-item-card">
+            <div class="risk-card-head">
+              <span class="risk-badge-level high">High Impact</span>
+              <strong>F1 Sanctioning / Hosting Rights Fee</strong>
+            </div>
+            <p>Formula One Group charges host promoters $25M–$50M USD (₹200 Cr–₹400 Cr) per year, typically funded through state subsidies or private underwriting. Omitted from base operating cost.</p>
+          </div>
+
+          <div class="risk-item-card">
+            <div class="risk-card-head">
+              <span class="risk-badge-level medium">Medium Impact</span>
+              <strong>Circuit Homologation & Track Upgrades</strong>
+            </div>
+            <p>Buddh International Circuit recertification, FIA Grade 1 compliance, modern electronic marshaling, kerb safety adjustments, and tech upgrades.</p>
+          </div>
+
+          <div class="risk-item-card">
+            <div class="risk-card-head">
+              <span class="risk-badge-level high">Regulatory</span>
+              <strong>Tax Classification & Legal Disputes</strong>
+            </div>
+            <p>Historically, the 2011–2013 races were classified as entertainment rather than sport by Uttar Pradesh tax authorities, triggering severe entertainment and customs levies.</p>
+          </div>
+
+          <div class="risk-item-card">
+            <div class="risk-card-head">
+              <span class="risk-badge-level medium">Economic</span>
+              <strong>Regional Leakage & Displacement</strong>
+            </div>
+            <p>Attendee spending cannot be equated directly with net economic benefit due to regional substitution effects and leakage to national hospitality and travel chains.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ASSUMPTIONS REGISTER -->
+      <div class="assumptions-section-wrap" id="assumptions-section">
+        <div class="section-header-compact">
+          <h3 class="subsection-title">Assumptions Register</h3>
+          <span class="section-subtitle">Empirical audit trail</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Reference Value</th>
+                <th>Unit</th>
+                <th>Confidence</th>
+                <th>Rationale</th>
+              </tr>
+            </thead>
+            <tbody id="assumptions-register-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       COMPACT MOBILE BOTTOM NAVIGATION BAR (FIXED)
+       ========================================================================= -->
+  <nav class="mobile-bottom-nav" aria-label="Mobile Bottom Navigation">
+    <a href="#view-home" class="bottom-nav-item active" id="nav-home">
+      <span class="bottom-nav-icon" aria-hidden="true">🏠</span>
+      <span class="bottom-nav-label">Home</span>
+    </a>
+    <a href="#view-simulator" class="bottom-nav-item" id="nav-simulator">
+      <span class="bottom-nav-icon" aria-hidden="true">⚙️</span>
+      <span class="bottom-nav-label">Simulator</span>
+    </a>
+    <a href="#view-results" class="bottom-nav-item" id="nav-results">
+      <span class="bottom-nav-icon" aria-hidden="true">📊</span>
+      <span class="bottom-nav-label">Results</span>
+    </a>
+    <a href="#view-risk" class="bottom-nav-item" id="nav-risk">
+      <span class="bottom-nav-icon" aria-hidden="true">🛡️</span>
+      <span class="bottom-nav-label">Risk</span>
+    </a>
+  </nav>
+
+  <!-- External Script -->
+  <script src="/script.js"></script>
+</body>
+</html>
